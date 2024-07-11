@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Speech Emotion Recognition</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div class="content">
+      <h1>Speech Emotion Recognition</h1>
+      <div class="blank"></div>
+      <center>
+        <div class="upload">
+          <form
+            id="upload_form"
+            enctype="multipart/form-data"
+            onsubmit="return false;"
+          >
+            <input
+              type="file"
+              name="file1"
+              accept=".wav"
+              id="fileInput"
+            /><br />
+            <div class="blank"></div>
+            <button type="button" onclick="uploadFile()" class="button button1">
+              Upload File
+            </button>
+          </form>
+        </div>
+      </center>
+      <div class="blank"></div>
+      <div class="blank"></div>
+      <p class="ouput">Model Output:</p>
+      <p id="result"></p>
+    </div>
+
+    <script>
+      function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          alert("Please select a file.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch("http://localhost:5000/predict", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById(
+              "result"
+            ).innerText = `Predicted Emotion: ${data.emotion}`;
+          })
+          .catch((error) => {
+            console.error(
+              "Error uploading file and predicting emotion:",
+              error
+            );
+          });
+      }
+    </script>
+  </body>
+</html>
